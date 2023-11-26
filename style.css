@@ -34,8 +34,6 @@ body {
     .main-content input {
         min-width: 400px;
 		min-height: 25px;
-        background-color: #06215d;
-        color: #ffffff;
     }
     .main-content {
         color: #eff;
