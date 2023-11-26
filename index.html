@@ -121,7 +121,10 @@ function sendMessage() {
 if (message.toLowerCase() === '/play') {     
       window.open("https://gd.games/luckythespacecat/the-blades-bane", "_blank");
     }
-
+if (message.includes('<') || message.includes('>')) {
+    // Delete the message from Firebase
+    deleteMessageFromFirebase(messageId); // Replace messageId with the actual ID of the message
+}
       
 if (message.toLowerCase() === '/delete') {
   const user = firebase.auth().currentUser;
@@ -222,6 +225,19 @@ function listenForMessages() {
     const message = snapshot.val();
     renderMessage(message, snapshot);
   });
+}
+function deleteMessageFromFirebase(messageId) {
+    // Assuming 'messages' is the name of your messages collection
+    var messagesRef = database.ref('messages/' + messageId);
+
+    // Remove the message from Firebase
+    messagesRef.remove()
+        .then(function() {
+            console.log('Message deleted from Firebase');
+        })
+        .catch(function(error) {
+            console.error('Error deleting message from Firebase: ', error);
+        });
 }
 
 listenForMessages();
