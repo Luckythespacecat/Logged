@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Play', sans-serif;
-    background-image: url('stars.png');
+    background-image: url('Stars.png');
     background-repeat: repeat;
     background-attachment: fixed; /* Add this line for parallax effect */
     background-position: center top; /* Adjust as needed */
