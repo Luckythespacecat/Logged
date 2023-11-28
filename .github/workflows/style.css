@@ -172,3 +172,7 @@ body {
         color: black;
         transition: 0.5s;
     }
+.main-content img {
+        min-width: 25px;
+        max-width: 600px;
+    }
