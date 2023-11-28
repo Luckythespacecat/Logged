@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -219,7 +220,10 @@ function renderMessage(message, snapshot) {
     messageElement.appendChild(imageElement);
   }
 
-  messageElement.innerHTML += `${message.username}: ${message.message || ''} (${message.timestamp})`;
+  const messageContent = document.createElement('div');
+  messageContent.textContent = `${message.username}: ${message.message || ''} (${message.timestamp})`;
+  messageElement.appendChild(messageContent);
+
   messagesContainer.appendChild(messageElement);
 }
 
