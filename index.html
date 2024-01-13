@@ -1,281 +1,112 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LTSC Forum</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>The Database</title>
+  <style>
+    body {
+      background-color: black;
+      font-family: 'Courier New', monospace;
+      color: #00FFFF;
+      text-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF, 0 0 15px #00FFFF, 0 0 20px #00FFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #terminal {
+      background-color: black;
+      border: 1px solid #00FFFF;
+      color: #00FFFF;
+      padding: 10px;
+      margin: 20px;
+      width: 50%;
+      height: 400px;
+      overflow: auto;
+    }
+
+    .message-bubble {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 5px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+
+    .user-input {
+      background-color: black;
+      font-family: 'Courier New', monospace;
+      color: #00FFFF;
+      text-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF, 0 0 15px #00FFFF, 0 0 20px #00FFFF;
+      border: 1px solid black;
+      outline: none;
+      box-shadow: solid black;
+    }
+
+    .print {
+      background-color: black;
+      font-family: 'Courier New', monospace;
+      color: #00FFFF;
+      text-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF, 0 0 15px #00FFFF, 0 0 20px #00FFFF;
+      border: 1px #00FFFF;
+      outline: none;
+      box-shadow: 0 0 2px #00FFFF, 0 0 4px #00FFFF, 0 0 5px #00FFFF, 0 0 6px #00FFFF;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script>
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYOn8H7B5efVC7arLmX1S_iNKpm6E4Vmo",
+      authDomain: "media-b77cc.firebaseapp.com",
+      databaseURL: "https://media-b77cc-default-rtdb.firebaseio.com",
+      projectId: "media-b77cc",
+      storageBucket: "media-b77cc.appspot.com",
+      messagingSenderId: "105164859883",
+      appId: "1:105164859883:web:053a03c2daefacfeaad1ae",
+      measurementId: "G-XZE03H3J7Z"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+
+    function sendMessage() {
+      var userInput = document.getElementById('user-input');
+      var inputValue = userInput.textContent.trim();
+
+      var command = inputValue.split(" ")[0];
+      if (inputValue === 'Snake') {
+        window.location.replace("Snake.html");
+        return;
+      }
+      if (command === 'add') {
+        var keyword = prompt("Enter the keyword:");
+        var phrase = prompt("Enter the phrase for the keyword:");
+        database.ref('keywords/' + keyword).set(phrase);
+      } else {
+        database.ref('keywords/' + inputValue).once('value', function (snapshot) {
+          var response = snapshot.val();
+          var newMessage = document.createElement('p');
+          newMessage.textContent = response || "Keyword not found";
+          terminal.appendChild(newMessage);
+        });
+      }
+
+      userInput.textContent = '';
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+  </script>
 </head>
+
 <body>
-<div class="sidebar">
-  <br>
-  <br>
-  <hr class="separator">
-  <a href="index"> Home</a>
-  <hr class="separator">
-  <a href="chat_bot"> Itch Page</a>
-  <hr class="separator">
-  <a href="gamestab"> Games</a>
-  <hr class="separator">
-  <a href="#contact"> Contact</a>
-  <hr class="separator">
-  <a href="https://luckythespacecat.creator-spring.com/"> Merch</a>
-  <hr class="separator">
-  <a href="credits"> Credits</a> 
-  <hr class="separator">
-</div>
-<div class="main-content">
-      <input style="color: 'white';border-color:#06215d;background-color:#06215d;"type="text" id="username" placeholder="Your Email">
-  <button style="color: 'white';border-color:#06215d;background-color:#06215d;" class="submit-btn" onclick="signUp()">Sign Up</button>
-  <br>
-  <input style="color: 'white';border-color:#06215d;background-color:#06215d;"type="password" id="password" placeholder="Your Password">
-  <button style="color: 'white';border-color:#06215d;background-color:#06215d;" class="submit-btn" onclick="login()">Log In</button>
-  <br>
-</div>
-<div class="navbar">
-  <a> <img src="Logged.png" style="width:200%;height:200%;" alt="menu"></a><a><center>     Logged</a>
-</div>
-
-<div class="main-content" id="chat-container">
-  <div class="content-about" id="messages"></div>
-  <div class="content-about">
-
-  <input style="border-color:#06215d;background-color:#06215d;" type="text" id="message" placeholder="Type your message">
-  <button style="border-color:#06215d;background-color:#06215d;" class="submit-btn" onclick="sendMessage()">Send</button>
-  <input style="border-color:#06215d;background-color:#06215d;" type="file" id="fileInput">
+  <div id="terminal">
+    <div class="user-input" id="user-input" contentEditable="true"></div>
+    <button class="print" id="submit" onclick="sendMessage()">Send Message</button>
   </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-storage.js"></script>
-<script>
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDpxCJ1mJU3kTwGhe0bu9775BuFx3I0Aoc",
-  authDomain: "database-c5be3.firebaseapp.com",
-  databaseURL: "https://database-c5be3-default-rtdb.firebaseio.com",
-  projectId: "database-c5be3",
-  storageBucket: "database-c5be3.appspot.com",
-  messagingSenderId: "508046042797",
-  appId: "1:508046042797:web:cf3a75c0a3171a21b20824",
-  measurementId: "G-NSYTSWDCBR"
-};
-firebase.initializeApp(firebaseConfig);
-
-const database = firebase.database();
-const chatRef = database.ref('chat');
-const usersRef = database.ref('users');
-const storage = firebase.storage();
-const storageRef = storage.ref();
-
-    function signUp() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      if (username && password) {
-        firebase.auth().createUserWithEmailAndPassword(username, password)
-          .then((userCredential) => {
-            alert('Account created successfully!');
-            // Save additional user info to the database
-            usersRef.child(userCredential.user.uid).set({
-              username,
-              email: userCredential.user.email,
-            });
-          })
-          .catch((error) => {
-            alert(`Error creating account: ${error.message}`);
-          });
-      } else {
-        alert('Please enter both username and password.');
-      }
-    }
-    
-   function login() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      if (username && password) {
-        firebase.auth().signInWithEmailAndPassword(username, password)
-          .then(() => {
-            alert('Logged in successfully!');
-          })
-          .catch((error) => {
-            alert(`Error logging in: ${error.message}`);
-          });
-      } else {
-        alert('Please enter both username and password.');
-      }
-    }
-
-
-function sendMessage() {
-  const user = firebase.auth().currentUser;
-  const message = document.getElementById('message').value;
-  const fileInput = document.getElementById('fileInput');
-
-  if (user && (message || fileInput.files.length > 0)) {
-    const username = user.displayName || user.email;
-    const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-if (message.toLowerCase() === '/play') {     
-      window.open("https://gd.games/luckythespacecat/the-blades-bane", "_blank");
-    }
-if (message.toLowerCase() === '/carl') {     
-      window.open("https://luckythespacecat.github.io/CARL/", "_blank");
-    }
-if (message.includes('<') || message.includes('>')) {
-    // Delete the message from Firebase
-    deleteMessageFromFirebase(messageId); // Replace messageId with the actual ID of the message
-}
-      
-if (message.toLowerCase() === '/delete') {
-  const user = firebase.auth().currentUser;
-  if (user) {
-    const currentUser = user.displayName || user.email;
-
-    if (confirm('Are you sure you want to delete all your messages?')) {
-      // Delete messages in Firebase
-      chatRef.orderByChild('username').equalTo(currentUser).once('value')
-        .then((snapshot) => {
-          snapshot.forEach((childSnapshot) => {
-            const key = childSnapshot.key;
-            chatRef.child(key).remove();
-          });
-          alert('All messages deleted successfully!');
-        })
-        .catch((error) => {
-          console.error('Error deleting messages:', error);
-          alert('Error deleting messages. Please try again.');
-        });
-
-      // Remove messages from the website
-      const messagesContainer = document.getElementById('messages');
-      while (messagesContainer.firstChild) {
-        messagesContainer.removeChild(messagesContainer.firstChild);
-      }
-    }
-  } else {
-    alert('Please sign in or create an account before using the delete command.');
-  }
-}
-
-      
-    if (fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const imageRef = storageRef.child(`images/${timestamp}_${file.name}`);
-      imageRef.put(file).then((snapshot) => {
-        return snapshot.ref.getDownloadURL();
-      }).then((downloadURL) => {
-        chatRef.push({
-          username,
-          message: message || '',
-          image: downloadURL,
-          timestamp,
-        });
-        fileInput.value = '';
-      }).catch((error) => {
-        console.error('Error uploading image:', error);
-        alert('Error uploading image. Please try again.');
-      });
-    } else {
-      chatRef.push({
-        username,
-        message,
-        timestamp,
-      });
-      document.getElementById('message').value = '';
-    }
-  } else {
-    alert('Please sign in or create an account before sending a message.');
-  }
-}
-
-function renderMessage(message, snapshot) {
-  const messagesContainer = document.getElementById('messages');
-  const messageElement = document.createElement('div');
-
-  messageElement.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    const currentUser = firebase.auth().currentUser;
-    if (currentUser && message.username === (currentUser.displayName || currentUser.email)) {
-      chatRef.child(snapshot.key).remove()
-        .then(() => {
-          messageElement.remove();
-          alert('Message deleted successfully!');
-        })
-        .catch((error) => {
-          console.error('Error deleting message:', error);
-          alert('Error deleting message. Please try again.');
-        });
-    } else {
-      alert('You can only delete your own messages.');
-    }
-  });
-
-  if (message.image) {
-    const imageElement = document.createElement('img');
-    imageElement.src = message.image;
-    messageElement.appendChild(imageElement);
-  }
-
-  const messageContent = document.createElement('div');
-  messageContent.textContent = `${message.username}: ${message.message || ''} (${message.timestamp})`;
-  messageElement.appendChild(messageContent);
-
-  messagesContainer.appendChild(messageElement);
-}
-
-function listenForMessages() {
-  chatRef.on('child_added', (snapshot) => {
-    const message = snapshot.val();
-    renderMessage(message, snapshot);
-  });
-}
-function deleteMessageFromFirebase(messageId) {
-    // Assuming 'messages' is the name of your messages collection
-    var messagesRef = database.ref('messages/' + messageId);
-
-    // Remove the message from Firebase
-    messagesRef.remove()
-        .then(function() {
-            console.log('Message deleted from Firebase');
-        })
-        .catch(function(error) {
-            console.error('Error deleting message from Firebase: ', error);
-        });
-}
-
-listenForMessages();
-
-</script>
-<script src="script.js"></script>
-<footer class="contact">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!--GOOGLE FONTS-->
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Play&amp;display=swap" rel="stylesheet"> 
-<footer>
-<div class="footer">
-<div class="row" id="contact">
-<a id="contact" href="https://instagram.com/_luckythespacecat_?utm_source=qr&amp;igshid=MzNlNGNkZWQ4Mg=="><i class="fa fa-instagram"></i></a>
-<a href="https://youtube.com/@luckythespacecat?si=Zg88yJVZXwbJ9_MA"><i class="fa fa-youtube"></i></a>
-<a href="https://twitter.com/Luckythespaccat?t=bLmPeyALH7GhXByrMV4ddw&amp;s=09"><i class="fa fa-twitter"></i></a>
-</div>
-<div class="row">
-<div>
-<a href="mailto:Luckythespacecat@gmail.com"> Contact us </a>
-</div>
-<div>
-<a href="https://luckythespacecat.itch.io/"> Our Games </a>
-</div>
-<div>
-<a href="privacy-policy"> Privacy Policy </a>
-</div>
-</div>
-</div>
-</footer>
-</footer>
 </body>
+
 </html>
