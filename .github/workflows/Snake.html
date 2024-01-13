@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Snake Game</title>
+  <style>
+    body {
+      background-color: black;
+      color: #00FFFF;
+      text-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF, 0 0 15px #00FFFF, 0 0 20px #00FFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: monospace;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Press Tab To Exit Game</h1>
+
+  <script>
+    const gridSize = 10;
+    let snake = [{x: 2, y: 2}];
+    let direction = 'right';
+    let food = generateFood();
+
+    function generateFood() {
+      return {
+        x: Math.floor(Math.random() * gridSize),
+        y: Math.floor(Math.random() * gridSize)
+      };
+    }
+
+    function draw() {
+      let display = '';
+      for (let y = 0; y < gridSize; y++) {
+        for (let x = 0; x < gridSize; x++) {
+          if (snake.some(s => s.x === x && s.y === y)) {
+            display += 'O ';
+          } else if (food.x === x && food.y === y) {
+            display += 'F ';
+          } else {
+            display += '. ';
+          }
+        }
+        display += '<br>';
+      }
+      document.body.innerHTML = display;
+    }
+
+    function move() {
+      const head = {...snake[0]};
+
+      switch (direction) {
+        case 'up':
+          head.y = (head.y - 1 + gridSize) % gridSize;
+          break;
+        case 'down':
+          head.y = (head.y + 1) % gridSize;
+          break;
+        case 'left':
+          head.x = (head.x - 1 + gridSize) % gridSize;
+          break;
+        case 'right':
+          head.x = (head.x + 1) % gridSize;
+          break;
+      }
+
+      snake.unshift(head);
+
+      if (head.x === food.x && head.y === food.y) {
+        food = generateFood();
+      } else {
+        snake.pop();
+      }
+    }
+
+    function changeDirection(event) {
+      switch (event.key) {
+        case 'ArrowUp':
+          direction = 'up';
+          break;
+        case 'ArrowDown':
+          direction = 'down';
+          break;
+        case 'ArrowLeft':
+          direction = 'left';
+          break;
+        case 'ArrowRight':
+          direction = 'right';
+          break;
+      }
+    }
+
+    function checkCollision() {
+      const head = snake[0];
+      return snake.slice(1).some(s => s.x === head.x && s.y === head.y);
+    }
+
+    function update() {
+      move();
+      if (checkCollision()) {
+        alert('Game Over!');
+        snake = [{x: 2, y: 2}];
+        direction = 'right';
+        food = generateFood();
+      }
+      draw();
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab') {
+        window.location.href = 'index.html';
+      } else {
+        changeDirection(event);
+      }
+    });
+
+    setInterval(update, 200);
+  </script>
+</body>
+
+</html>
